@@ -9,6 +9,7 @@ function runAnimation(target, dotSize, strokeWidth, color, dotOpacity) {
     target.append(canvas);
     canvas.width = target.clientWidth;
     canvas.height = target.clientHeight;
+    let size = (target.clientWidth + target.clientHeight) / 2;
     canvas.addEventListener("click", mouseClickHandler, false);
     canvas.addEventListener("touchstart", mouseClickHandler, false);
 
@@ -55,7 +56,7 @@ function runAnimation(target, dotSize, strokeWidth, color, dotOpacity) {
     }
 
     var dots = [];
-    for (let i = 0, length = canvas.width/100 + 5; i < length; i++)
+    for (let i = 0, length = size/100 + 5; i < length; i++)
         dots.push(new Dot(Math.random() * canvas.width, Math.random() * canvas.height));
 
     var time = Date.now();
@@ -72,7 +73,7 @@ function runAnimation(target, dotSize, strokeWidth, color, dotOpacity) {
             dot.draw();
 
             var collidedDots = dots.filter(function(target) {
-                return dot !== target && distance(dot.x, dot.y, target.x, target.y) <= (dot.r + target.r + canvas.width/5);
+                return dot !== target && distance(dot.x, dot.y, target.x, target.y) <= (dot.r + target.r + size/5);
             });
 
             if (collidedDots.length > 0) {
@@ -85,7 +86,7 @@ function runAnimation(target, dotSize, strokeWidth, color, dotOpacity) {
                     var dist = distance(dot.x, dot.y, target.x, target.y);
                     ctx.lineWidth = strokeWidth;
                     ctx.strokeStyle = color;
-                    ctx.globalAlpha = ((dist/(canvas.width/5 + dot.r + target.r) - 1) * -1);
+                    ctx.globalAlpha = ((dist/(size/5 + dot.r + target.r) - 1) * -1);
                     ctx.stroke();
                     ctx.globalAlpha = 1;
 
