@@ -10,6 +10,7 @@ function runAnimation(target, dotSize, strokeWidth, color, dotOpacity) {
     canvas.width = target.clientWidth;
     canvas.height = target.clientHeight;
     canvas.addEventListener("click", mouseClickHandler, false);
+    canvas.addEventListener("touchstart", mouseClickHandler, false);
 
     function mouseClickHandler(e) {
         dots.push(new Dot(e.clientX, e.clientY));
