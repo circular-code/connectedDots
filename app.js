@@ -56,7 +56,7 @@ function runAnimation(target, dotSize, strokeWidth, color, dotOpacity) {
     }
 
     var dots = [];
-    for (let i = 0, length = size/100 + 5; i < length; i++)
+    for (let i = 0, length = size/50 + 5; i < length; i++)
         dots.push(new Dot(Math.random() * canvas.width, Math.random() * canvas.height));
 
     var time = Date.now();
