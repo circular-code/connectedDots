@@ -45,13 +45,16 @@ function runAnimation(target, dotSize, strokeWidth, color, dotOpacity) {
                 (this.x - this.r < 0) ||
                 (this.y > canvas.height - this.r) ||
                 (this.y - this.r) < 0)
-                this.angle += Math.PI;
+                this.angle = Math.PI + 2 * this.angle;
+
+            if (this.angle > Math.PI * 2)
+                this.angle -= Math.PI * 2;
                 // this.angle = Math.random() * Math.PI * 2;
 
             this.x += 30 * Math.cos(this.angle) * timeDelta;
             this.y += 30 * Math.sin(this.angle) * timeDelta;
 
-            this.angle += Math.random() / 4 * timeDelta;
+            // this.angle += Math.random() / 4 * timeDelta;
         }
     }
 
