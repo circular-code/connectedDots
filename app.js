@@ -3,7 +3,7 @@ function distance (x1, y1, x2, y2) {
     return Math.sqrt(Math.pow(x2-x1, 2) + Math.pow(y2-y1, 2));
 }
 
-function runAnimation(target, dotSize, strokeWidth, color, dotOpacity) {
+function runAnimation(target, dotSize, strokeWidth, color, dotOpacity, newDotColor) {
     var canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
     target.append(canvas);
@@ -14,7 +14,7 @@ function runAnimation(target, dotSize, strokeWidth, color, dotOpacity) {
     canvas.addEventListener("touchstart", mouseClickHandler, false);
 
     function mouseClickHandler(e) {
-        dots.push(new Dot(e.clientX, e.clientY));
+        dots.push(new Dot(e.clientX, e.clientY, newDotColor));
     }
 
     window.addEventListener('resize', function() {
@@ -23,11 +23,15 @@ function runAnimation(target, dotSize, strokeWidth, color, dotOpacity) {
     });
 
     class Dot {
-        constructor (x,y) {
+        constructor (x,y, color) {
+            var angle = Math.random() * Math.PI * 2;
             this.x = x;
+            this.xMovementDirection = angle > Math.PI ? -1 : 1;
             this.y = y;
+            this.yMovementDirection = (angle > Math.PI/2) || (angle < (Math.PI + Math.PI/2)) ? -1 : 1;
             this.r = dotSize;
-            this.angle = Math.random() * Math.PI * 2;
+            this.angle = angle;
+            this.color = color;
         }
 
         draw () {
@@ -35,32 +39,37 @@ function runAnimation(target, dotSize, strokeWidth, color, dotOpacity) {
             ctx.globalAlpha = dotOpacity;
             ctx.arc(this.x, this.y, this.r, 0, Math.PI*2);
             ctx.closePath();
-            ctx.fillStyle = color;
+            ctx.fillStyle = this.color || color;
             ctx.fill();
             ctx.globalAlpha = 1;
         }
 
         move (timeDelta) {
-            if ((this.x  > canvas.width - this.r) ||
-                (this.x - this.r < 0) ||
-                (this.y > canvas.height - this.r) ||
-                (this.y - this.r) < 0)
-                this.angle = Math.PI + 2 * this.angle;
 
-            if (this.angle > Math.PI * 2)
-                this.angle -= Math.PI * 2;
-                // this.angle = Math.random() * Math.PI * 2;
+            if (this.x >= (canvas.width - this.r) || (this.x - this.r) <= 0)
+                this.xMovementDirection *= -1;
 
-            this.x += 30 * Math.cos(this.angle) * timeDelta;
-            this.y += 30 * Math.sin(this.angle) * timeDelta;
+            else if (this.y > (canvas.height - this.r) || (this.y - this.r) <= 0)
+                this.yMovementDirection *= -1;
 
-            // this.angle += Math.random() / 4 * timeDelta;
+            // if (this.x >= (canvas.width - this.r))
+            //     this.xMovementDirection = -1;
+            // else if ((this.x - this.r) <= 0)
+            //     this.xMovementDirection = 1;
+
+            // if (this.y > (canvas.height - this.r))
+            //     this.yMovementDirection = -1;
+            // else if ((this.y - this.r) <= 0)
+            //     this.yMovementDirection = 1;
+
+            this.x += 100 * this.xMovementDirection * Math.cos(this.angle) * timeDelta;
+            this.y += 100 * this.yMovementDirection * Math.sin(this.angle) * timeDelta;
         }
     }
 
     var dots = [];
-    for (let i = 0, length = size/100 + 5; i < length; i++)
-        dots.push(new Dot(Math.random() * canvas.width, Math.random() * canvas.height));
+    for (let i = 0, length = size/70 + 5; i < length; i++)
+        dots.push(new Dot(Math.random() * (canvas.width - 5) + 5, (Math.random() * (canvas.height - 5) + 5)));
 
     var time = Date.now();
 
@@ -88,7 +97,7 @@ function runAnimation(target, dotSize, strokeWidth, color, dotOpacity) {
 
                     var dist = distance(dot.x, dot.y, target.x, target.y);
                     ctx.lineWidth = strokeWidth;
-                    ctx.strokeStyle = color;
+                    ctx.strokeStyle = dot.color || color;
                     ctx.globalAlpha = ((dist/(size/5 + dot.r + target.r) - 1) * -1);
                     ctx.stroke();
                     ctx.globalAlpha = 1;
