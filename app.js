@@ -14,7 +14,7 @@ function runAnimation(target, dotSize, strokeWidth, color, dotOpacity, newDotCol
     canvas.addEventListener("touchstart", mouseClickHandler, false);
 
     function mouseClickHandler(e) {
-        dots.push(new Dot(e.clientX, e.clientY, newDotColor));
+        dots.push(new Dot(e.pageX, e.pageY, newDotColor));
     }
 
     window.addEventListener('resize', function() {
