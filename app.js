@@ -13,6 +13,9 @@ function runAnimation(target, dotSize, strokeWidth, color, dotOpacity, newDotCol
     canvas.addEventListener("click", mouseClickHandler, false);
     canvas.addEventListener("touchstart", mouseClickHandler, false);
 
+    // adjust to vertical scrollbar
+    var width = window.document.body.clientWidth < canvas.width ? window.document.body.clientWidth : canvas.width;
+
     function mouseClickHandler(e) {
         if (dots.length > 50)
             dots.shift();
@@ -48,9 +51,6 @@ function runAnimation(target, dotSize, strokeWidth, color, dotOpacity, newDotCol
         }
 
         move (timeDelta) {
-
-            // adjust to vertical scrollbar
-            var width = window.document.body.clientWidth < canvas.width ? window.document.body.clientWidth : canvas.width;
 
             if (this.x >= (width - this.r) || (this.x - this.r) <= 0)
                 this.xDir *= -1;
