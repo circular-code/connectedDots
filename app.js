@@ -52,9 +52,6 @@ function runAnimation(target, dotSize, strokeWidth, color, dotOpacity, newDotCol
             // adjust to vertical scrollbar
             var width = window.document.body.clientWidth < canvas.width ? window.document.body.clientWidth : canvas.width;
 
-            if (document.documentElement.scrollHeight > document.documentElement.clientHeight)
-                width -= window.innerWidth - document.documentElement.clientWidth;
-
             if (this.x >= (width - this.r) || (this.x - this.r) <= 0)
                 this.xDir *= -1;
 
