@@ -14,6 +14,9 @@ function runAnimation(target, dotSize, strokeWidth, color, dotOpacity, newDotCol
     canvas.addEventListener("touchstart", mouseClickHandler, false);
 
     function mouseClickHandler(e) {
+        if (dots.length > 50)
+            dots.shift();
+
         dots.push(new Dot(e.pageX, e.pageY, newDotColor));
     }
 
@@ -26,9 +29,9 @@ function runAnimation(target, dotSize, strokeWidth, color, dotOpacity, newDotCol
         constructor (x,y, color) {
             var angle = Math.random() * Math.PI * 2;
             this.x = x;
-            this.xMovementDirection = angle > Math.PI ? -1 : 1;
+            this.xDir = angle > Math.PI ? -1 : 1;
             this.y = y;
-            this.yMovementDirection = (angle > Math.PI/2) || (angle < (Math.PI + Math.PI/2)) ? -1 : 1;
+            this.yDir = (angle > Math.PI/2) || (angle < (Math.PI + Math.PI/2)) ? -1 : 1;
             this.r = dotSize;
             this.angle = angle;
             this.color = color;
@@ -46,24 +49,20 @@ function runAnimation(target, dotSize, strokeWidth, color, dotOpacity, newDotCol
 
         move (timeDelta) {
 
-            if (this.x >= (canvas.width - this.r) || (this.x - this.r) <= 0)
-                this.xMovementDirection *= -1;
+            // adjust to vertical scrollbar
+            var width = window.document.body.clientWidth < canvas.width ? window.document.body.clientWidth : canvas.width;
+
+            if (document.documentElement.scrollHeight > document.documentElement.clientHeight)
+                width -= window.innerWidth - document.documentElement.clientWidth;
+
+            if (this.x >= (width - this.r) || (this.x - this.r) <= 0)
+                this.xDir *= -1;
 
             else if (this.y > (canvas.height - this.r) || (this.y - this.r) <= 0)
-                this.yMovementDirection *= -1;
+                this.yDir *= -1;
 
-            // if (this.x >= (canvas.width - this.r))
-            //     this.xMovementDirection = -1;
-            // else if ((this.x - this.r) <= 0)
-            //     this.xMovementDirection = 1;
-
-            // if (this.y > (canvas.height - this.r))
-            //     this.yMovementDirection = -1;
-            // else if ((this.y - this.r) <= 0)
-            //     this.yMovementDirection = 1;
-
-            this.x += 100 * this.xMovementDirection * Math.cos(this.angle) * timeDelta;
-            this.y += 100 * this.yMovementDirection * Math.sin(this.angle) * timeDelta;
+            this.x += 30 * this.xDir * Math.cos(this.angle) * timeDelta;
+            this.y += 30 * this.yDir * Math.sin(this.angle) * timeDelta;
         }
     }
 
@@ -77,16 +76,17 @@ function runAnimation(target, dotSize, strokeWidth, color, dotOpacity, newDotCol
 
         var timeDelta = (now - time) / 1000;
 
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        //prevent huge jumps of dot movement when leaving site
+        if (timeDelta >= 0.05)
+            timeDelta = 0.01;
 
         dots.forEach(dot => {
             dot.move(timeDelta || 0);
             dot.draw();
 
-            var collidedDots = dots.filter(function(target) {
-                return dot !== target && distance(dot.x, dot.y, target.x, target.y) <= (dot.r + target.r + size/5);
-            });
+            var collidedDots = dots.filter(target => dot !== target && distance(dot.x, dot.y, target.x, target.y) <= (dot.r + target.r + size/5));
 
             if (collidedDots.length > 0) {
                 collidedDots.forEach(target => {
