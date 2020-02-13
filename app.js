@@ -32,9 +32,9 @@ function runAnimation(target, dotSize, strokeWidth, color, dotOpacity, newDotCol
         constructor (x,y, color) {
             var angle = Math.random() * Math.PI * 2;
             this.x = x;
-            this.xDir = angle > Math.PI ? -1 : 1;
+            this.xDirection = angle > Math.PI ? -1 : 1;
             this.y = y;
-            this.yDir = (angle > Math.PI/2) || (angle < (Math.PI + Math.PI/2)) ? -1 : 1;
+            this.yDirection = (angle > Math.PI/2) || (angle < (Math.PI + Math.PI/2)) ? -1 : 1;
             this.r = dotSize;
             this.angle = angle;
             this.color = color;
@@ -53,13 +53,13 @@ function runAnimation(target, dotSize, strokeWidth, color, dotOpacity, newDotCol
         move (timeDelta) {
 
             if (this.x >= (width - this.r) || (this.x - this.r) <= 0)
-                this.xDir *= -1;
+                this.xDirection *= -1;
 
             else if (this.y > (canvas.height - this.r) || (this.y - this.r) <= 0)
-                this.yDir *= -1;
+                this.yDirection *= -1;
 
-            this.x += 30 * this.xDir * Math.cos(this.angle) * timeDelta;
-            this.y += 30 * this.yDir * Math.sin(this.angle) * timeDelta;
+            this.x += 30 * this.xDirection * Math.cos(this.angle) * timeDelta;
+            this.y += 30 * this.yDirection * Math.sin(this.angle) * timeDelta;
         }
     }
 
