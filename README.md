@@ -11,3 +11,6 @@ embed the following at the end of your body tag and replace the variables in run
     runAnimation(document.getElementById('canvas'), 3, 0.5, "rgba(0,0,0,0.5)", 0.1);
   });
 </script>
+
+### License
+MIT
